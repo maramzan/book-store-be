@@ -11,7 +11,6 @@ type LoginRequest = {
 
 @Route("auth")
 export class AuthController {
-
   private generateToken(user: Users) {
     return jwt.sign({ id: user.id }, process.env["JWT_SECRET"] as string, {
       expiresIn: "12h",
@@ -20,16 +19,21 @@ export class AuthController {
 
   @Post("register")
   public async register(@Body() request: Partial<Users>) {
-    console.log("request", request);
-    const hashedPassword = await bcrypt.hash(request.password as string, 10);
-    const user = await AuthService.createUser({
-      ...request,
-      password: hashedPassword,
-    });
-    const token = this.generateToken(user);
-    return { user, token };
-  }
+    try {
+      console.log("request", request);
+      const hashedPassword = await bcrypt.hash(request.password as string, 10);
+      const user = await AuthService.createUser({
+        ...request,
+        password: hashedPassword,
+      });
+      console.log("user", user);
 
+      const token = this.generateToken(user);
+      return { user, token };
+    } catch (err) {
+      console.log("err", err);
+    }
+  }
   @Post("login")
   public async login(@Body() request: LoginRequest) {
     const user = await AuthService.findUserByEmail(request.email);

@@ -1,16 +1,19 @@
-import { Order, Prisma } from '@prisma/client';
-import { prisma } from '../prismaClient/prisma-client';
+import { Order, Prisma } from "@prisma/client";
+import { prisma } from "../prismaClient/prisma-client";
 
 type OrderWithBook = Prisma.OrderGetPayload<{
-    include: { book: true }
-  }>;
- class OrderService {
-  public async createOrder(order: { userId: number; bookId: number }): Promise<Order> {
+  include: { book: true };
+}>;
+class OrderService {
+  public async createOrder(order: {
+    userId: number;
+    bookId: number;
+  }): Promise<Order> {
     return prisma.order.create({
       data: {
         userId: order.userId,
         bookId: order.bookId,
-        status: 'PURCHASED',
+        status: "PURCHASED",
       },
     });
   }
@@ -25,16 +28,16 @@ type OrderWithBook = Prisma.OrderGetPayload<{
   public async cancelOrder(id: number): Promise<Order> {
     return prisma.order.update({
       where: { id },
-      data: { status: 'CANCELLED' },
+      data: { status: "CANCELLED" },
     });
   }
 
   public async getOrdersByUserId(userId: number): Promise<Order[]> {
     return prisma.order.findMany({
       where: { userId },
+      include: { book: true },
     });
   }
-
 }
 
 export default new OrderService();
