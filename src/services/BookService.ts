@@ -1,10 +1,17 @@
 // services/BookService.ts
-import { BookInterface } from '../interfaces/books';
-import BookRepository from '../repositories/BookRepository';
+import { BookInterface } from "../interfaces/books";
+import BookRepository from "../repositories/BookRepository";
 
 class BookService {
   async getBooks(offset: number, limit: number) {
-    return BookRepository.findBooks(offset, limit);
+    const books = await BookRepository.findBooks(offset, limit);
+    const totalBooksCount = await BookRepository.countBooks();
+    const totalPages = Math.ceil(totalBooksCount / limit);
+
+    return {
+      books,
+      totalPages,
+    };
   }
 
   async getBookById(id: number) {
@@ -20,11 +27,11 @@ class BookService {
   }
 
   async deleteBook(id: number) {
-     BookRepository.deleteBook(id);
-     return;
+    BookRepository.deleteBook(id);
+    return;
   }
   async searchBooks(query: string) {
-   return BookRepository.searchBooks(query);
+    return BookRepository.searchBooks(query);
   }
 }
 

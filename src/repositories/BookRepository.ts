@@ -11,6 +11,10 @@ class BookRepository {
     });
   }
 
+  async countBooks() {
+    return prisma.book.count();
+  }
+
   async findBookById(id: number) {
     return prisma.book.findUnique({
       where: { id },
@@ -38,14 +42,14 @@ class BookRepository {
 
   async searchBooks(query: string) {
     return prisma.book.findMany({
-        where: {
-          OR: [
-            { title: { contains: query, mode: 'insensitive' } },
-            { writer: { contains: query, mode: 'insensitive' } },
-            { tags: { has: query } },
-          ],
-        },
-      });
+      where: {
+        OR: [
+          { title: { contains: query, mode: "insensitive" } },
+          { writer: { contains: query, mode: "insensitive" } },
+          { tags: { has: query } },
+        ],
+      },
+    });
   }
 }
 

@@ -7,8 +7,8 @@ export class BookController {
   @Get("/")
   public async getBooks(
     @Query() page: number = 1,
-    @Query() limit: number = 10
-  ): Promise<BookInterface[]> {
+    @Query() limit: number = 20
+  ): Promise<{ books: BookInterface[]; totalPages: number }> {
     const offset = (page - 1) * limit;
     return BookService.getBooks(offset, limit);
   }
@@ -48,5 +48,4 @@ export class BookController {
   public async deleteBook(@Path() id: number): Promise<void> {
     return BookService.deleteBook(id);
   }
- 
 }
